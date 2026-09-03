@@ -11,7 +11,7 @@ The command prints the new tokens as JSON. When the provider does not rotate the
 #### Usage
 
 ```bash
-aux4 google-oauth-app refresh --params '{"provider":"<provider>"}' --body '{"refreshToken":"<token>"}'
+aux4 oauth-app-google refresh --params '{"provider":"<provider>"}' --body '{"refreshToken":"<token>"}'
 ```
 
 --params  Path params as JSON — must include `provider` (e.g. `google`)
@@ -30,7 +30,7 @@ curl -X POST "https://<machine-url>/api/google/refresh" \
 #### Example
 
 ```bash
-aux4 google-oauth-app refresh --params '{"provider":"google"}' --body '{"refreshToken":"1//0g..."}'
+aux4 oauth-app-google refresh --params '{"provider":"google"}' --body '{"refreshToken":"1//0g..."}'
 ```
 
 ```json

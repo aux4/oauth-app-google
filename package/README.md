@@ -1,4 +1,4 @@
-# aux4/google-oauth-app
+# aux4/oauth-app-google
 
 Deploy your **own Google OAuth service** in one click. It holds your Google OAuth client id and secret server-side and does the authorization-URL build, the code exchange, and the token refresh on behalf of your CLI tools — so those tools **never handle a client secret**, and every user authenticates under **your** Google project, quota, and consent screen.
 
@@ -6,12 +6,12 @@ It is a thin HTTP wrapper over [`aux4/oauth`](https://hub.aux4.io/r/public/packa
 
 ## Quick start
 
-1. **Deploy it.** From the [hub package page](https://hub.aux4.io/r/public/packages/aux4/google-oauth-app), click **Deploy to cloud** (or `aux4 aux4 cloud deploy google-oauth-app --package aux4/google-oauth-app --api true`). You get a URL like `https://<your-scope>.on.aux4.cloud/google-oauth-app`.
+1. **Deploy it.** From the [hub package page](https://hub.aux4.io/r/public/packages/aux4/oauth-app-google), click **Deploy to cloud** (or `aux4 aux4 cloud deploy oauth-app-google --package aux4/oauth-app-google --api true`). You get a URL like `https://<your-scope>.on.aux4.cloud/oauth-app-google`.
 
 2. **Add your Google credentials.** Create an OAuth client of type **Desktop app** in the [Google Cloud Console](https://console.cloud.google.com/) (Desktop is required so the CLI's `http://localhost:9876/callback` loopback redirect is accepted), then set them on the machine:
 
    ```bash
-   aux4 aux4 cloud google-oauth-app env set GOOGLE_CLIENT_ID=... GOOGLE_CLIENT_SECRET=...
+   aux4 aux4 cloud oauth-app-google env set GOOGLE_CLIENT_ID=... GOOGLE_CLIENT_SECRET=...
    ```
 
    Values are encrypted at rest per scope and applied to the live machine immediately.
@@ -19,7 +19,7 @@ It is a thin HTTP wrapper over [`aux4/oauth`](https://hub.aux4.io/r/public/packa
 3. **Point your CLI at it.** For [`community/google-auth`](https://hub.aux4.io/r/public/packages/community/google-auth):
 
    ```bash
-   export GOOGLE_AUTH_BROKER="https://<your-scope>.on.aux4.cloud/google-oauth-app/api"
+   export GOOGLE_AUTH_BROKER="https://<your-scope>.on.aux4.cloud/oauth-app-google/api"
    aux4 google auth login
    ```
 
@@ -30,7 +30,7 @@ It is a thin HTTP wrapper over [`aux4/oauth`](https://hub.aux4.io/r/public/packa
 You do not normally install this package locally — you deploy it. To inspect or run it locally:
 
 ```bash
-aux4 aux4 pkger install aux4/google-oauth-app
+aux4 aux4 pkger install aux4/oauth-app-google
 ```
 
 ## How it works
@@ -67,7 +67,7 @@ Query parameters:
 | `state` | Opaque value round-tripped back to the client |
 
 ```bash
-curl "https://<your-scope>.on.aux4.cloud/google-oauth-app/api/google/authorize-url?redirectUri=http://127.0.0.1:9876/callback"
+curl "https://<your-scope>.on.aux4.cloud/oauth-app-google/api/google/authorize-url?redirectUri=http://127.0.0.1:9876/callback"
 ```
 
 ```json
@@ -89,7 +89,7 @@ JSON body:
 | `redirectUri` | The same redirect URI used to obtain the code |
 
 ```bash
-curl -X POST "https://<your-scope>.on.aux4.cloud/google-oauth-app/api/google/exchange" \
+curl -X POST "https://<your-scope>.on.aux4.cloud/oauth-app-google/api/google/exchange" \
   -H "Content-Type: application/json" \
   -d '{"code":"4/0Ab...","codeVerifier":"b7f3...","redirectUri":"http://127.0.0.1:9876/callback"}'
 ```
@@ -118,7 +118,7 @@ JSON body:
 | `refreshToken` | The refresh token returned by `exchange` |
 
 ```bash
-curl -X POST "https://<your-scope>.on.aux4.cloud/google-oauth-app/api/google/refresh" \
+curl -X POST "https://<your-scope>.on.aux4.cloud/oauth-app-google/api/google/refresh" \
   -H "Content-Type: application/json" \
   -d '{"refreshToken":"1//0g..."}'
 ```

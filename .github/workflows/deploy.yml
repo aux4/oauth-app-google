@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'google-oauth-app version to deploy'
+        description: 'oauth-app-google version to deploy'
         required: false
         default: 'latest'
       size:
@@ -33,12 +33,12 @@ jobs:
           scope: aux4
           # aux4's own shared instance keeps its legacy machine name (and URL,
           # https://aux4.on.aux4.cloud/oauth-broker) so google-auth's default
-          # broker is unchanged; only the package it runs changes to google-oauth-app.
+          # broker is unchanged; only the package it runs changes to oauth-app-google.
           machine: oauth-broker
           api: 'true'
           size: ${{ inputs.size || 'sm' }}
           deploy_packages: |
-            aux4/google-oauth-app@${{ inputs.version || 'latest' }}
+            aux4/oauth-app-google@${{ inputs.version || 'latest' }}
           # Auth: the dedicated CI principal 'aux4-cloud-deployer' — a
           # client_credentials client granted membership in the aux4 scope, so
           # the cloud API (which authorizes deploys by scope membership)

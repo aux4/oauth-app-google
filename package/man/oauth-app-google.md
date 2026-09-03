@@ -1,6 +1,6 @@
 #### Description
 
-The `google-oauth-app` command groups the OAuth broker subcommands. The broker is a provider-agnostic OAuth service that holds each provider's application credentials (client id and secret) so that thin CLI clients never have to handle them.
+The `oauth-app-google` command groups the OAuth broker subcommands. The broker is a provider-agnostic OAuth service that holds each provider's application credentials (client id and secret) so that thin CLI clients never have to handle them.
 
 It is a thin wrapper over `aux4/oauth` and is designed to run as an `api`-type machine on aux4.cloud. Its routes are served behind an API Gateway:
 
@@ -21,13 +21,13 @@ Subcommands:
 #### Usage
 
 ```bash
-aux4 google-oauth-app <subcommand>
+aux4 oauth-app-google <subcommand>
 ```
 
 #### Example
 
 ```bash
-aux4 google-oauth-app authorize-url --params '{"provider":"google"}' --query '{"redirectUri":"http://127.0.0.1:9876/callback"}'
+aux4 oauth-app-google authorize-url --params '{"provider":"google"}' --query '{"redirectUri":"http://127.0.0.1:9876/callback"}'
 ```
 
 Served over HTTP as:

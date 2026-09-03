@@ -1,6 +1,6 @@
 {
   "scope": "aux4",
-  "name": "google-oauth-app",
+  "name": "oauth-app-google",
   "version": "0.0.2",
   "description": "Deploy your own Google OAuth service in one click: it holds your Google client id/secret so your CLI tools never have to.",
   "license": "MIT",
@@ -28,9 +28,9 @@
       "name": "main",
       "commands": [
         {
-          "name": "google-oauth-app",
+          "name": "oauth-app-google",
           "execute": [
-            "profile:google-oauth-app"
+            "profile:oauth-app-google"
           ],
           "help": {
             "text": "Google OAuth app commands"
@@ -39,7 +39,7 @@
       ]
     },
     {
-      "name": "google-oauth-app",
+      "name": "oauth-app-google",
       "commands": [
         {
           "name": "health",

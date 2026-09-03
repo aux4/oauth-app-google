@@ -15,7 +15,7 @@ The command prints a JSON object with:
 #### Usage
 
 ```bash
-aux4 google-oauth-app authorize-url --params '{"provider":"<provider>"}' --query '{"redirectUri":"<uri>","scopes":"<scopes>","state":"<state>"}'
+aux4 oauth-app-google authorize-url --params '{"provider":"<provider>"}' --query '{"redirectUri":"<uri>","scopes":"<scopes>","state":"<state>"}'
 ```
 
 --params  Path params as JSON — must include `provider` (e.g. `google`)
@@ -32,7 +32,7 @@ curl "https://<machine-url>/api/google/authorize-url?redirectUri=http://127.0.0.
 #### Example
 
 ```bash
-aux4 google-oauth-app authorize-url --params '{"provider":"google"}' --query '{"redirectUri":"http://127.0.0.1:9876/callback","scopes":"openid email","state":"xyz"}'
+aux4 oauth-app-google authorize-url --params '{"provider":"google"}' --query '{"redirectUri":"http://127.0.0.1:9876/callback","scopes":"openid email","state":"xyz"}'
 ```
 
 ```json

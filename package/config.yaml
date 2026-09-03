@@ -10,10 +10,10 @@
 config:
   api:
     "GET /health":
-      command: aux4 google-oauth-app health
+      command: aux4 oauth-app-google health
     "GET /{provider}/authorize-url":
-      command: aux4 google-oauth-app authorize-url
+      command: aux4 oauth-app-google authorize-url
     "POST /{provider}/exchange":
-      command: aux4 google-oauth-app exchange
+      command: aux4 oauth-app-google exchange
     "POST /{provider}/refresh":
-      command: aux4 google-oauth-app refresh
+      command: aux4 oauth-app-google refresh
