@@ -1,0 +1,19 @@
+# aux4/api route map for the OAuth broker.
+#
+# Deployed as an aux4.cloud api-type machine. Each "METHOD /path" maps to an aux4
+# command. The api runtime passes the request context to the command as flags:
+#   --params '{"provider":"google"}'   (path params, from {provider})
+#   --query  '{"redirectUri":"..."}'   (query string)
+#   --body   '{"code":"..."}'          (JSON body)
+# so the commands read ${params.x} / ${query.x} / ${body.x} — NOT shell ${...}.
+# Routes are served under the /api prefix (e.g. GET <machine-url>/api/health).
+config:
+  api:
+    "GET /health":
+      command: aux4 google-oauth-app health
+    "GET /{provider}/authorize-url":
+      command: aux4 google-oauth-app authorize-url
+    "POST /{provider}/exchange":
+      command: aux4 google-oauth-app exchange
+    "POST /{provider}/refresh":
+      command: aux4 google-oauth-app refresh

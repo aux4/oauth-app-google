@@ -1,0 +1,17 @@
+# Google OAuth endpoint configuration for google-oauth-app.
+#
+# Credentials (clientId / clientSecret) are NOT stored here — they are supplied
+# per provider as machine environment variables (GOOGLE_CLIENT_ID /
+# GOOGLE_CLIENT_SECRET, and later X_CLIENT_ID, SLACK_CLIENT_ID, ...). This file
+# only holds the non-secret OAuth endpoints, passed to aux4/oauth via
+# --configFile.
+#
+# To add a provider: add its endpoints below, add <PROVIDER>_CLIENT_ID /
+# <PROVIDER>_CLIENT_SECRET env vars to the machine, and add a branch in the
+# oauth-broker authorize-url / exchange commands.
+config:
+  google:
+    authUrl: https://accounts.google.com/o/oauth2/v2/auth
+    tokenUrl: https://oauth2.googleapis.com/token
+    userinfoUrl: https://openidconnect.googleapis.com/v1/userinfo
+    scopes: openid email profile
