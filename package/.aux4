@@ -1,7 +1,7 @@
 {
   "scope": "aux4",
   "name": "oauth-app-google",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Google provider plugin for aux4/oauth-app. Adds a `google` command and the /google/* OAuth routes; holds your Google client id/secret so your CLI tools never have to.",
   "license": "MIT",
   "tags": [
