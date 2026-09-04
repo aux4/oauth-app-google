@@ -12,14 +12,25 @@
 # Routes are served under the /api prefix (e.g. GET <machine-url>/api/google/authorize-url).
 config:
   api:
+    # Gated by default (secure mode): requires a same-scope aux4 idToken.
     "GET /google/authorize-url":
       command: aux4 oauth-app google authorize-url
     # Redirect landing point for Google. Register <machine-url>/api/google/callback
     # as the redirect URI on the Google app. Delegates to the shared core handler,
-    # which parks the code by session id for the polling CLI.
+    # which parks the code by session id for the polling CLI. PUBLIC: the provider's
+    # browser redirect carries no aux4 token, and the parked code is useless without
+    # the client's PKCE verifier.
     "GET /google/callback":
       command: aux4 oauth-app callback
+      public: true
+    # Gated by default (secure mode): requires a same-scope aux4 idToken.
     "POST /google/exchange":
       command: aux4 oauth-app google exchange
+    # PUBLIC: the refresh token is itself the credential, so refresh stays open —
+    # but rate-limited to blunt brute-force / abuse.
     "POST /google/refresh":
       command: aux4 oauth-app google refresh
+      public: true
+      rateLimit:
+        max: 10
+        timeWindow: 60000
