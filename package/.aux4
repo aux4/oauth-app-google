@@ -2,19 +2,17 @@
   "scope": "aux4",
   "name": "oauth-app-google",
   "version": "0.0.3",
-  "description": "Deploy your own Google OAuth service in one click: it holds your Google client id/secret so your CLI tools never have to.",
+  "description": "Google provider plugin for aux4/oauth-app. Adds a `google` command and the /google/* OAuth routes; holds your Google client id/secret so your CLI tools never have to.",
   "license": "MIT",
   "tags": [
     "oauth",
     "google",
     "auth",
     "cloud",
-    "broker"
+    "plugin"
   ],
   "dependencies": [
-    "aux4/api",
-    "aux4/oauth",
-    "aux4/config"
+    "aux4/oauth-app"
   ],
   "system": [
     [
@@ -25,68 +23,39 @@
   ],
   "profiles": [
     {
-      "name": "main",
+      "name": "oauth-app",
       "commands": [
         {
-          "name": "oauth-app-google",
+          "name": "google",
           "execute": [
-            "profile:oauth-app-google"
+            "profile:oauth-app:google"
           ],
           "help": {
-            "text": "Google OAuth app commands"
+            "text": "Google OAuth provider"
           }
         }
       ]
     },
     {
-      "name": "oauth-app-google",
+      "name": "oauth-app:google",
       "commands": [
-        {
-          "name": "health",
-          "execute": [
-            "echo '{\"status\":\"ok\"}'"
-          ],
-          "help": {
-            "text": "Liveness check",
-            "variables": [
-              {
-                "name": "params",
-                "text": "Path params (from the api runtime)",
-                "default": "{}"
-              },
-              {
-                "name": "query",
-                "text": "Query params (from the api runtime)",
-                "default": "{}"
-              },
-              {
-                "name": "body",
-                "text": "Request body (from the api runtime)",
-                "default": "{}"
-              }
-            ]
-          }
-        },
         {
           "name": "authorize-url",
           "execute": [
-            "set:provider=${params.provider}",
             "set:redirectUri=${query.redirectUri}",
             "set:scopes=${query.scopes}",
             "set:scopes=nvl(scopes, googleScopes)",
             "set:state=${query.state}",
-            "if(provider==) && echo \"Error: provider is required\" 1>&2 && exit 1 || true",
-            "if(provider!=google) && echo \"Error: provider value(provider) is not configured\" 1>&2 && exit 1 || true",
             "set:clientId=${googleClientId}",
-            "if(clientId==) && echo \"Error: provider value(provider) has no client credentials configured\" 1>&2 && exit 1 || true",
-            "aux4 oauth authorize-url --provider value(provider) --clientId value(clientId) param(redirectUri) param(scopes) param(state) --configFile ${packageDir}/providers.yaml"
+            "if(clientId==) && echo \"Error: google has no client credentials configured\" 1>&2 && exit 1 || true",
+            "aux4 oauth authorize-url --provider google --clientId value(clientId) param(redirectUri) param(scopes) param(state) --configFile ${packageDir}/providers.yaml"
           ],
           "help": {
-            "text": "Build the provider authorization URL (server-side, credentials held by this app)",
+            "text": "Build the Google authorization URL (server-side, credentials held by this app)",
             "variables": [
               {
                 "name": "params",
-                "text": "Path params — {provider}",
+                "text": "Path params (from the api runtime)",
                 "default": "{}"
               },
               {
@@ -123,23 +92,20 @@
         {
           "name": "exchange",
           "execute": [
-            "set:provider=${params.provider}",
             "set:code=${body.code}",
             "set:codeVerifier=${body.codeVerifier}",
             "set:redirectUri=${body.redirectUri}",
-            "if(provider==) && echo \"Error: provider is required\" 1>&2 && exit 1 || true",
-            "if(provider!=google) && echo \"Error: provider value(provider) is not configured\" 1>&2 && exit 1 || true",
             "set:clientId=${googleClientId}",
             "set:clientSecret=${googleClientSecret}",
-            "if(clientId==) && echo \"Error: provider value(provider) has no client credentials configured\" 1>&2 && exit 1 || true",
-            "aux4 oauth exchange --provider value(provider) --clientId value(clientId) --clientSecret value(clientSecret) param(code) param(codeVerifier) param(redirectUri) --includeTokens true --configFile ${packageDir}/providers.yaml"
+            "if(clientId==) && echo \"Error: google has no client credentials configured\" 1>&2 && exit 1 || true",
+            "aux4 oauth exchange --provider google --clientId value(clientId) --clientSecret value(clientSecret) param(code) param(codeVerifier) param(redirectUri) --includeTokens true --configFile ${packageDir}/providers.yaml"
           ],
           "help": {
             "text": "Exchange an authorization code for tokens (server-side, credentials held by this app)",
             "variables": [
               {
                 "name": "params",
-                "text": "Path params — {provider}",
+                "text": "Path params (from the api runtime)",
                 "default": "{}"
               },
               {
@@ -170,22 +136,19 @@
         {
           "name": "refresh",
           "execute": [
-            "set:provider=${params.provider}",
             "set:refreshToken=${body.refreshToken}",
-            "if(provider==) && echo \"Error: provider is required\" 1>&2 && exit 1 || true",
-            "if(provider!=google) && echo \"Error: provider value(provider) is not configured\" 1>&2 && exit 1 || true",
-            "if(refreshToken==) && echo \"Error: refreshToken is required\" 1>&2 && exit 1 || true",
             "set:clientId=${googleClientId}",
             "set:clientSecret=${googleClientSecret}",
-            "if(clientId==) && echo \"Error: provider value(provider) has no client credentials configured\" 1>&2 && exit 1 || true",
-            "aux4 oauth refresh --provider value(provider) --clientId value(clientId) --clientSecret value(clientSecret) param(refreshToken) --configFile ${packageDir}/providers.yaml"
+            "if(refreshToken==) && echo \"Error: refreshToken is required\" 1>&2 && exit 1 || true",
+            "if(clientId==) && echo \"Error: google has no client credentials configured\" 1>&2 && exit 1 || true",
+            "aux4 oauth refresh --provider google --clientId value(clientId) --clientSecret value(clientSecret) param(refreshToken) --configFile ${packageDir}/providers.yaml"
           ],
           "help": {
             "text": "Renew an access token from a refresh token (server-side, credentials held by this app)",
             "variables": [
               {
                 "name": "params",
-                "text": "Path params — {provider}",
+                "text": "Path params (from the api runtime)",
                 "default": "{}"
               },
               {
