@@ -40,9 +40,10 @@ The provider is implicitly Google — there is no `provider` argument.
 
 The plugin owns these routes (the core owns `/health`), served under the `/api` prefix (for example `GET <machine-url>/api/google/authorize-url`):
 
-1. `GET /google/authorize-url` — returns the Google authorization URL, a PKCE `codeVerifier`, and the `state`. The client opens the URL in a browser and keeps the `codeVerifier`.
-2. `POST /google/exchange` — takes the authorization `code`, the `codeVerifier`, and the `redirectUri`, and returns the tokens plus the resolved user profile.
-3. `POST /google/refresh` — takes a `refreshToken` and returns a renewed set of tokens.
+1. `GET /google/authorize-url` — returns the Google authorization URL, a PKCE `codeVerifier`, and the `state`. The client opens the URL in a browser and keeps the `codeVerifier`. **Gated** by the endpoint auth (see below).
+2. `GET /google/callback` — the browser redirect landing point (delegates to the core `callback` handler, which parks the code by session id). **Public** — the provider redirect carries no aux4 token. Register `<machine-url>/api/google/callback` as the redirect URI on the Google app.
+3. `POST /google/exchange` — takes the authorization `code`, the `codeVerifier`, and the `redirectUri`, and returns the tokens plus the resolved user profile. **Gated**.
+4. `POST /google/refresh` — takes a `refreshToken` and returns a renewed set of tokens. **Public but rate-limited** (the refresh token is itself the credential).
 
 Your client id and secret live only on the machine (as encrypted environment variables) and never leave the cloud.
 
@@ -139,4 +140,6 @@ When Google does not rotate the refresh token, `refreshToken` comes back empty a
 
 ## Security
 
-These endpoints are **unauthenticated**: anything that can reach the URL can start an OAuth flow with your Google client. That is by design for a loopback CLI login, but it means you should treat the deployment URL as semi-sensitive, register only the redirect URIs your clients actually use, and keep `GOOGLE_SCOPES` scoped to what you need.
+The broker is **secure by default**: `authorize-url` and `exchange` require a valid aux4 idToken whose owner is entitled to the machine's scope, enforced by the core's endpoint-auth gate (see [`aux4/oauth-app` › Endpoint authentication](https://hub.aux4.io/r/public/packages/aux4/oauth-app)). `callback` is public (the browser redirect carries no token) and `refresh` is public but rate-limited (the refresh token is the credential).
+
+To run the machine fully public — anything that can reach the URL can start an OAuth flow with your Google client — set `OAUTH_APP_PUBLIC=true` on the machine. Either way, register only the redirect URIs your clients actually use and keep `GOOGLE_SCOPES` scoped to what you need.
