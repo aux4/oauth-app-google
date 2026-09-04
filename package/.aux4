@@ -42,11 +42,13 @@
         {
           "name": "authorize-url",
           "execute": [
-            "set:redirectUri=${query.redirectUri}",
+            "set:base=nvl(brokerPublicUrl, cloudVmUrl)",
+            "set:redirectUri=!echo -n ${base}/api/google/callback",
             "set:scopes=${query.scopes}",
             "set:scopes=nvl(scopes, googleScopes)",
             "set:state=${query.state}",
             "set:clientId=${googleClientId}",
+            "if(base==) && echo \"Error: this broker's public URL is not set — provide BROKER_PUBLIC_URL, or deploy on aux4.cloud which injects AUX4_CLOUD_VM_URL\" 1>&2 && exit 1 || if(base!=) && true",
             "if(clientId==) && echo \"Error: google has no client credentials configured\" 1>&2 && exit 1 || true",
             "aux4 oauth authorize-url --provider google --clientId value(clientId) param(redirectUri) param(scopes) param(state) --configFile ${packageDir}/providers.yaml"
           ],
@@ -85,6 +87,18 @@
                 "text": "Default scopes (space or comma separated) used when the request does not specify any; falls back to the bundled Google default",
                 "env": "GOOGLE_SCOPES",
                 "default": ""
+              },
+              {
+                "name": "brokerPublicUrl",
+                "text": "This broker's own public base URL (e.g. https://host/oauth-broker/api); the redirect URI is <brokerPublicUrl>/callback and must be registered on the Google app",
+                "env": "BROKER_PUBLIC_URL",
+                "default": ""
+              },
+              {
+                "name": "cloudVmUrl",
+                "text": "The machine's own public base URL, injected automatically by aux4.cloud (AUX4_CLOUD_VM_URL). Used when BROKER_PUBLIC_URL is not set, so a hosted broker needs no URL config",
+                "env": "AUX4_CLOUD_VM_URL",
+                "default": ""
               }
             ]
           }
@@ -94,9 +108,11 @@
           "execute": [
             "set:code=${body.code}",
             "set:codeVerifier=${body.codeVerifier}",
-            "set:redirectUri=${body.redirectUri}",
+            "set:base=nvl(brokerPublicUrl, cloudVmUrl)",
+            "set:redirectUri=!echo -n ${base}/api/google/callback",
             "set:clientId=${googleClientId}",
             "set:clientSecret=${googleClientSecret}",
+            "if(base==) && echo \"Error: this broker's public URL is not set — provide BROKER_PUBLIC_URL, or deploy on aux4.cloud which injects AUX4_CLOUD_VM_URL\" 1>&2 && exit 1 || if(base!=) && true",
             "if(clientId==) && echo \"Error: google has no client credentials configured\" 1>&2 && exit 1 || true",
             "aux4 oauth exchange --provider google --clientId value(clientId) --clientSecret value(clientSecret) param(code) param(codeVerifier) param(redirectUri) --includeTokens true --configFile ${packageDir}/providers.yaml"
           ],
@@ -115,7 +131,7 @@
               },
               {
                 "name": "body",
-                "text": "Request body — code, codeVerifier, redirectUri",
+                "text": "Request body — code, codeVerifier (redirectUri is fixed to this broker's callback)",
                 "default": "{}"
               },
               {
@@ -128,6 +144,18 @@
                 "name": "googleClientSecret",
                 "text": "Google OAuth client secret",
                 "env": "GOOGLE_CLIENT_SECRET",
+                "default": ""
+              },
+              {
+                "name": "brokerPublicUrl",
+                "text": "This broker's own public base URL; the redirect URI (<brokerPublicUrl>/callback) must match the one used at authorize time",
+                "env": "BROKER_PUBLIC_URL",
+                "default": ""
+              },
+              {
+                "name": "cloudVmUrl",
+                "text": "The machine's own public base URL, injected automatically by aux4.cloud (AUX4_CLOUD_VM_URL). Used when BROKER_PUBLIC_URL is not set, so a hosted broker needs no URL config",
+                "env": "AUX4_CLOUD_VM_URL",
                 "default": ""
               }
             ]

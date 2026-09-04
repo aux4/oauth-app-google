@@ -14,6 +14,11 @@ config:
   api:
     "GET /google/authorize-url":
       command: aux4 oauth-app google authorize-url
+    # Redirect landing point for Google. Register <machine-url>/api/google/callback
+    # as the redirect URI on the Google app. Delegates to the shared core handler,
+    # which parks the code by session id for the polling CLI.
+    "GET /google/callback":
+      command: aux4 oauth-app callback
     "POST /google/exchange":
       command: aux4 oauth-app google exchange
     "POST /google/refresh":
