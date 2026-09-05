@@ -1,10 +1,11 @@
 # aux4/oauth-app-google 0.0.6
 
-## Changed
+## Fixed
 
-- **Endpoint auth alignment with the secure-by-default core.** `/google/callback`
-  and `/google/refresh` are marked `public: true` (the browser redirect must reach
-  the callback without a token, and a refresh token is itself the credential), so
-  they stay open. `/google/authorize-url` and `/google/exchange` inherit the core's
-  secure-by-default gate — a caller must present a valid aux4 idToken unless the VM
-  runs with `OAUTH_APP_PUBLIC=true`.
+- Hardened token operations so they no longer depend on `${packageDir}/providers.yaml`
+  resolving on a multi-package broker VM. The `authorize-url`, `exchange`, and
+  `refresh` commands now pass the Google OAuth endpoints explicitly as flags
+  (`--authUrl`, `--tokenUrl`, `--userinfoUrl`) in addition to `--configFile`.
+  Explicit flags take precedence, so the operations succeed even if the config file
+  fails to load — matching the fix shipped in `oauth-app-x` 0.0.7. Google sends the
+  client secret in the body, so `--clientSecretIn` is intentionally not set.

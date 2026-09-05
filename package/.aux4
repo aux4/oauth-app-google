@@ -50,7 +50,7 @@
             "set:clientId=${googleClientId}",
             "if(base==) && echo \"Error: this broker's public URL is not set — provide BROKER_PUBLIC_URL, or deploy on aux4.cloud which injects AUX4_CLOUD_VM_URL\" 1>&2 && exit 1 || if(base!=) && true",
             "if(clientId==) && echo \"Error: google has no client credentials configured\" 1>&2 && exit 1 || true",
-            "aux4 oauth authorize-url --provider google --clientId value(clientId) param(redirectUri) param(scopes) param(state) --configFile ${packageDir}/providers.yaml"
+            "aux4 oauth authorize-url --provider google --clientId value(clientId) param(redirectUri) param(scopes) param(state) --authUrl https://accounts.google.com/o/oauth2/v2/auth --configFile ${packageDir}/providers.yaml"
           ],
           "help": {
             "text": "Build the Google authorization URL (server-side, credentials held by this app)",
@@ -114,7 +114,7 @@
             "set:clientSecret=${googleClientSecret}",
             "if(base==) && echo \"Error: this broker's public URL is not set — provide BROKER_PUBLIC_URL, or deploy on aux4.cloud which injects AUX4_CLOUD_VM_URL\" 1>&2 && exit 1 || if(base!=) && true",
             "if(clientId==) && echo \"Error: google has no client credentials configured\" 1>&2 && exit 1 || true",
-            "aux4 oauth exchange --provider google --clientId value(clientId) --clientSecret value(clientSecret) param(code) param(codeVerifier) param(redirectUri) --includeTokens true --configFile ${packageDir}/providers.yaml"
+            "aux4 oauth exchange --provider google --clientId value(clientId) --clientSecret value(clientSecret) param(code) param(codeVerifier) param(redirectUri) --includeTokens true --tokenUrl https://oauth2.googleapis.com/token --userinfoUrl https://openidconnect.googleapis.com/v1/userinfo --configFile ${packageDir}/providers.yaml"
           ],
           "help": {
             "text": "Exchange an authorization code for tokens (server-side, credentials held by this app)",
@@ -169,7 +169,7 @@
             "set:clientSecret=${googleClientSecret}",
             "if(refreshToken==) && echo \"Error: refreshToken is required\" 1>&2 && exit 1 || true",
             "if(clientId==) && echo \"Error: google has no client credentials configured\" 1>&2 && exit 1 || true",
-            "aux4 oauth refresh --provider google --clientId value(clientId) --clientSecret value(clientSecret) param(refreshToken) --configFile ${packageDir}/providers.yaml"
+            "aux4 oauth refresh --provider google --clientId value(clientId) --clientSecret value(clientSecret) param(refreshToken) --tokenUrl https://oauth2.googleapis.com/token --configFile ${packageDir}/providers.yaml"
           ],
           "help": {
             "text": "Renew an access token from a refresh token (server-side, credentials held by this app)",
